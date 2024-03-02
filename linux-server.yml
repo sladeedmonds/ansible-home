@@ -1,0 +1,10 @@
+---
+- hosts: linux_home_server
+  become: yes
+  roles:
+    - common
+    - linux_server
+    - docker
+    - telegraf_amd64
+  vars_files:
+    - group_vars/secrets.enc

@@ -1,0 +1,28 @@
+---
+- name: Download telegraf
+  ansible.builtin.get_url:
+    url: https://dl.influxdata.com/telegraf/releases/telegraf_1.27.0-1_armhf.deb
+    dest: /home/pi/telegraf_1.27.0-1_armhf.deb
+    checksum: sha256:0db96f3ff57eeacc109ab6cbc49cc9261282bb0e06df4d243251a94991b4b2f3
+    owner: pi
+    group: pi
+    mode: '0644'
+
+- name: Install the telegraf package
+  ansible.builtin.apt:
+    deb: /home/pi/telegraf_1.27.0-1_armhf.deb
+
+- name: Copy telegraf configuration file
+  become: yes
+  ansible.builtin.template:
+    src: ./files/telegraf.conf.sensor.jinja2
+    dest: /etc/telegraf/telegraf.conf
+    owner: pi
+    group: pi
+    mode: '0644'
+
+- name: Restart telegraf
+  become: yes
+  ansible.builtin.service:
+    state: restarted
+    name: telegraf

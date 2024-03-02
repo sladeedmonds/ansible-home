@@ -1,0 +1,7 @@
+---
+- name: install ntp
+  become: yes
+  ansible.builtin.package:
+      name: ntp
+      state: present
+  tags: ntp

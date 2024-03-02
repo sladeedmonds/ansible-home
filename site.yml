@@ -1,0 +1,4 @@
+# import other playbooks
+# - import_playbook: gitlab_runner.yml
+---
+- import_playbook: linux_server.yml

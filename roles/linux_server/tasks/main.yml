@@ -1,0 +1,10 @@
+---
+- name: Add the terraform GPG signing key
+  ansible.builtin.apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: Add Hashicorp Linux repo
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64]  https://apt.releases.hashicorp.com focal main
+    state: present

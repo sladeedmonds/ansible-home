@@ -1,0 +1,70 @@
+---
+- name: Install packages
+  become: yes
+  ansible.builtin.package:
+    name: python3-pip,virtualenv,libgpiod2,unattended-upgrades
+    state: present
+
+- name: Fix unattended-upgrades
+  become: yes
+  ansible.builtin.copy:
+    src: ./files/50unattended-upgrades
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install python modules
+  become: no
+  ansible.builtin.pip:
+    name:
+      - adafruit-circuitpython-dht
+    virtualenv: /home/pi/sensor/venv
+
+- name: Relax permissions
+  ansible.builtin.file:
+    path: /home/pi
+    owner: pi
+    group: pi
+    mode: '0755'
+
+- name: Copy python script
+  become: no
+  ansible.builtin.copy:
+    src: ./files/temp_sensor.py
+    dest: /home/pi/temp_sensor.py
+    owner: pi
+    group: pi
+    mode: '0644'
+
+- name: Copy temp_sensor.sh
+  become: no
+  ansible.builtin.copy:
+    src: ./files/temp_sensor.sh
+    dest: /home/pi/temp_sensor.sh
+    owner: pi
+    group: pi
+    mode: '0755'
+
+- name: Create ~/log to store the csv file
+  become: no
+  ansible.builtin.file:
+    path: /home/pi/log
+    state: directory
+    mode: '0755'
+
+- name: Add a cron job
+  become: no
+  ansible.builtin.cron:
+    name: "installed temp_sensor.sh cron"
+    minute: "*"
+    hour: "*"
+    job: "/home/pi/temp_sensor.sh"
+
+- name: Create logrotate config
+  ansible.builtin.blockinfile:
+    path: "{{ item.path }}"
+    block: "{{ item.conf }}"
+    create: true
+    mode: 0644
+  loop: "{{ lp_logrotate_confd }}"

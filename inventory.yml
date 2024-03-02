@@ -1,0 +1,17 @@
+---
+all:
+  hosts:
+  children:
+    linux_home_server:
+      hosts:
+        linux.edmonds.home:
+    pi_temp_sensors:
+      hosts:
+        masterbr-zero1.edmonds.home:
+        laundry-zero1.edmonds.home:
+        garage-zero1.edmonds.home:
+        porch-zero1.edmonds.home:
+        shed-zero1.edmonds.home:
+        basement-zero1.edmonds.home:
+      vars:
+        ansible_user: pi

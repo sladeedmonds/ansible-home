@@ -1,0 +1,28 @@
+---
+- name: Download telegraf
+  ansible.builtin.get_url:
+    url: https://dl.influxdata.com/telegraf/releases/telegraf_1.27.0-1_amd64.deb
+    dest: /opt/telegraf_1.27.0-1_amd64.deb
+    checksum: sha256:f74efdfa515d416eb48b6d3cf6de4b6d53a7aebf637b06589412f2bfb7b788c2
+    owner: telegraf
+    group: telegraf
+    mode: '0644'
+
+- name: install the telegraf package
+  ansible.builtin.apt:
+    deb: /opt/telegraf_1.27.0-1_amd64.deb
+
+- name: Copy telegraf configuration file
+  become: yes
+  ansible.builtin.template:
+    src: ./files/telegraf.conf.linux.jinja2
+    dest: /etc/telegraf/telegraf.conf
+    owner: telegraf
+    group: telegraf
+    mode: '0644'
+
+- name: Restart telegraf
+  become: yes
+  ansible.builtin.service:
+    state: restarted
+    name: telegraf

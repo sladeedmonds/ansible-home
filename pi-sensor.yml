@@ -1,0 +1,13 @@
+---
+- hosts: pi_temp_sensors
+  ignore_unreachable: yes
+  become: yes
+  roles:
+    - common
+    - temp_sensor
+    - role: telegraf_arm
+      when: ansible_architecture == "armv6l"
+    - role: telegraf_aarch64
+      when: ansible_architecture == "aarch64"
+  vars_files:
+    - group_vars/secrets.enc

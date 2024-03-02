@@ -1,0 +1,12 @@
+---
+ansible_ssh_user: pi
+lp_logrotate_confd:
+  - path: /etc/logrotate.d/sensor
+    conf: |
+      /home/pi/log/temperature-humidity.csv {
+                 weekly
+                 rotate 3
+                 size 1M
+                 compress
+                 delaycompress
+        }
